@@ -30,12 +30,15 @@ data Location = Location
 
 degToRad :: Double -> Double
 degToRad deg = pi * deg / 180
+{-# INLINE degToRad #-}
 
 radToDeg :: Double -> Double
 radToDeg rad = rad * 180 / pi
+{-# INLINE radToDeg #-}
 
 startDay :: UTCTime
 startDay = UTCTime (fromGregorian 1900 1 1) 0
+{-# INLINE startDay #-}
 
 -- | Offset in hours
 timezoneOffset :: ZonedTime -> Double
@@ -53,6 +56,7 @@ julianDay t =
 
 julianCentury :: ZonedTime -> Double
 julianCentury t = (julianDay t - 2451545) / 36525
+{-# INLINE julianCentury #-}
 
 -- | deg
 geomMeanLongSun :: ZonedTime -> Double
@@ -82,10 +86,12 @@ sunEqOfCtr t =
 -- | deg
 sunTrueLong :: ZonedTime -> Double
 sunTrueLong t = geomMeanLongSun t + sunEqOfCtr t
+{-# INLINE sunTrueLong #-}
 
 -- | deg
 sunTrueAnom :: ZonedTime -> Double
 sunTrueAnom t = geomMeanAnomSun t + sunEqOfCtr t
+{-# INLINE sunTrueAnom #-}
 
 -- | AUs
 sunRadVector :: ZonedTime -> Double
@@ -127,12 +133,9 @@ sunDeclin t =
     radToDeg . asin $
     sin (degToRad $ obliqCorr t) * sin (degToRad $ sunAppLong t)
 
-varY :: ZonedTime -> Double
-varY t = tan (degToRad (obliqCorr t / 2)) ** 2
-
 eqOfTime :: ZonedTime -> Double
 eqOfTime t =
-    let u2 = varY t
+    let u2 = tan (degToRad (obliqCorr t / 2)) ** 2
         i2 = degToRad $ geomMeanLongSun t
         j2 = degToRad $ geomMeanAnomSun t
         k2 = eccentEarthOrbit t
@@ -237,3 +240,4 @@ solarZenithAngle t loc =
 -- Complimentary to 'solarZenithAngle'.
 solarElevationAngle :: ZonedTime -> Location -> Double
 solarElevationAngle t loc = 90 - solarZenithAngle t loc
+{-# INLINE solarElevationAngle #-}

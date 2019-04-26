@@ -11,10 +11,15 @@ module Data.Time.Solar
     , solarMidnight
     , sunrise
     , sunset
+    , sunlightDuration
     , hourAngle
     , trueSolarTime
     , solarZenithAngle
     , solarElevationAngle
+    -- * Local Solar Time
+    , solarNoonLST
+    , sunriseLST
+    , sunsetLST
     -- * Re-Export
     , ZonedTime(..)
     ) where
@@ -154,16 +159,20 @@ haSunrise t loc =
         decl = degToRad . sunDeclin $ t
      in radToDeg . acos $ x / (cos lat * cos decl) - tan lat * tan decl
 
+-- | Solar Noon given in local solar time.
 solarNoonLST :: ZonedTime -> Location -> Double
 solarNoonLST t loc =
     (720 - 4 * longitude loc - eqOfTime t + timezoneOffset t * 60) / 1440
 
+-- | Sunrise given in local solar time.
 sunriseLST :: ZonedTime -> Location -> Double
 sunriseLST t loc = solarNoonLST t loc - haSunrise t loc * 4 / 1440
 
+-- | Sunset given in local solar time.
 sunsetLST :: ZonedTime -> Location -> Double
 sunsetLST t loc = solarNoonLST t loc + haSunrise t loc * 4 / 1440
 
+-- | Duration of sunlight on a given date and location.
 sunlightDuration :: ZonedTime -> Location -> DiffTime
 sunlightDuration t loc = fromInteger . truncate $ 60 * 8 * haSunrise t loc
 

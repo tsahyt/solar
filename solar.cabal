@@ -1,7 +1,7 @@
 name:                solar
 version:             0.1.0.0
 synopsis:            Simple library for solar calculations
-description:         See README
+description:         Simple library for solar calculations, to determine sunset, sunrise, solar noon, etc.
 homepage:            https://github.com/tsahyt/solar#readme
 license:             MIT
 license-file:        LICENSE
